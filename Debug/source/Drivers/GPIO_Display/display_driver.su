@@ -1,6 +1,6 @@
-../source/Drivers/GPIO_Display/display_driver.c:35:6:clean	4	static
-../source/Drivers/GPIO_Display/display_driver.c:46:6:mostrar	24	static
-../source/Drivers/GPIO_Display/display_driver.c:60:6:Show_Seconds	8	static
-../source/Drivers/GPIO_Display/display_driver.c:86:6:prender	4	static
-../source/Drivers/GPIO_Display/display_driver.c:90:6:apagar	4	static
-../source/Drivers/GPIO_Display/display_driver.c:94:6:Display_GPIOs_init	4	static
+../source/Drivers/GPIO_Display/display_driver.c:37:6:clean	4	static
+../source/Drivers/GPIO_Display/display_driver.c:43:6:mostrar	24	static
+../source/Drivers/GPIO_Display/display_driver.c:59:6:Show_Seconds	8	static
+../source/Drivers/GPIO_Display/display_driver.c:108:6:prender	4	static
+../source/Drivers/GPIO_Display/display_driver.c:112:6:apagar	4	static
+../source/Drivers/GPIO_Display/display_driver.c:116:6:Display_GPIOs_init	4	static

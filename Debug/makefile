@@ -33,7 +33,7 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := Displays
+BUILD_ARTIFACT_NAME := Test2RepoGit
 BUILD_ARTIFACT_EXTENSION := axf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
@@ -45,24 +45,24 @@ all:
 	+@$(MAKE) --no-print-directory main-build && $(MAKE) --no-print-directory post-build
 
 # Main-build Target
-main-build: Displays.axf
+main-build: Test2RepoGit.axf
 
 # Tool invocations
-Displays.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
+Test2RepoGit.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -Xlinker -Map="Displays.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -T Displays_Debug.ld -o "Displays.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -Xlinker -Map="Test2RepoGit.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -T Test2RepoGit_Debug.ld -o "Test2RepoGit.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) Displays.axf
+	-$(RM) Test2RepoGit.axf
 	-@echo ' '
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "Displays.axf"; # arm-none-eabi-objcopy -v -O binary "Displays.axf" "Displays.bin" ; # checksum -p MK64FN1M0xxx12 -d "Displays.bin";
+	-arm-none-eabi-size "Test2RepoGit.axf"; # arm-none-eabi-objcopy -v -O binary "Test2RepoGit.axf" "Test2RepoGit.bin" ; # checksum -p MK64FN1M0xxx12 -d "Test2RepoGit.bin";
 	-@echo ' '
 
 .PHONY: all clean dependents main-build post-build

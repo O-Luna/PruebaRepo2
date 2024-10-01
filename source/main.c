@@ -15,7 +15,6 @@ int main(void) {
 	PIT_init_d();
 
 	while(1){
-		Show_Seconds();
-		PIT_Delay(1000000);
+
 	}
 }

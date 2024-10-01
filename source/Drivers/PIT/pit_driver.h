@@ -10,6 +10,10 @@
 
 volatile extern uint8_t u_sec;
 volatile extern uint8_t d_sec;
+volatile extern uint8_t u_min;
+volatile extern uint8_t d_min;
+volatile extern uint8_t u_hour;
+volatile extern uint8_t d_hour;
 
 void PIT_init_d();
 void PIT_Delay(int time);

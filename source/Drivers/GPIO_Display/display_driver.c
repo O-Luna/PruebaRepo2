@@ -30,20 +30,18 @@ const uint8_t nums[10] = {
 };
 
 bool alt_sec= false;
+bool alt_min=false;
 uint8_t segments=0;
+volatile uint8_t current_display = 0;
 
 void clean(){
-	GPIOD->PSOR = (1 << 0);
-	GPIOD->PSOR = (1 << 1);
-	GPIOD->PSOR = (1 << 2);
-	GPIOD->PSOR = (1 << 3);
-	GPIOD->PSOR = (1 << 4);
-	GPIOD->PSOR = (1 << 5);
-	GPIOD->PSOR = (1 << 6);
+	GPIOD->PSOR = 0xFF;
+
 }
 
 
 void mostrar(uint8_t number) {
+
     if (number > 9) return;
     clean();
 
@@ -57,30 +55,54 @@ void mostrar(uint8_t number) {
     if (segments & SEG_G) GPIOD->PCOR = (1 << 6);
 }
 
-void Show_Seconds(){
-	if (u_sec > 9|| d_sec >9) return;
-	clean();
 
-	if(alt_sec==false){
-		GPIOC->PSOR |= (1 << 5);
-		GPIOC->PCOR |= (1 << 4); //apagar
-		segments = nums[u_sec];
+void Show_Seconds() {
+	if (u_sec > 9|| d_sec >9 || u_min>9 || d_min>9) return;
+    clean();
 
-	} else{
-		GPIOC->PSOR |= (1 << 4);
-		GPIOC->PCOR |= (1 << 5); //apagar
-		segments = nums[d_sec];
-	}
+    switch(current_display) {
+        case 0:
+            GPIOC->PSOR |= (1 << 5); // PTC5
+            GPIOC->PCOR |= (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1)| (1 << 0);
+            segments = nums[u_sec];
+            break;
+        case 1:
+            GPIOC->PSOR |= (1 << 4); //PTC4
+            GPIOC->PCOR |= (1 << 5) | (1 << 3) | (1 << 2)| (1 << 1)| (1 << 0);
+            segments = nums[d_sec];
+            break;
+        case 2:
+            GPIOC->PSOR |= (1 << 3); //PTC3
+            GPIOC->PCOR |= (1 << 5) | (1 << 4) | (1 << 2)| (1 << 1)| (1 << 0);
+            segments = nums[u_min];
+            break;
+        case 3:
+            GPIOC->PSOR |= (1 << 2); //PTC2
+            GPIOC->PCOR |= (1 << 5) | (1 << 4) | (1 << 3)| (1 << 1)| (1 << 0);
+            segments = nums[d_min];
+            break;
+        case 4:
+            GPIOC->PSOR |= (1 << 1); //PTC2
+            GPIOC->PCOR |= (1 << 5) | (1 << 4) | (1 << 3)| (1 << 0)| (1 << 2);
+            segments = nums[u_hour];
+            break;
+        case 5:
+            GPIOC->PSOR |= (1 << 0); //PTC2
+            GPIOC->PCOR |= (1 << 5) | (1 << 4) | (1 << 3)| (1 << 1) |(1 << 2);
+            segments = nums[d_hour];
+            break;
 
-	if (segments & SEG_A) GPIOD->PCOR = (1 << 0);
-	if (segments & SEG_B) GPIOD->PCOR = (1 << 1);
-	if (segments & SEG_C) GPIOD->PCOR = (1 << 2);
-	if (segments & SEG_D) GPIOD->PCOR = (1 << 3);
-	if (segments & SEG_E) GPIOD->PCOR = (1 << 4);
-	if (segments & SEG_F) GPIOD->PCOR = (1 << 5);
-	if (segments & SEG_G) GPIOD->PCOR = (1 << 6);
+    }
 
-	alt_sec= !alt_sec;
+    if (segments & SEG_A) GPIOD->PCOR = (1 << 0);
+    if (segments & SEG_B) GPIOD->PCOR = (1 << 1);
+    if (segments & SEG_C) GPIOD->PCOR = (1 << 2);
+    if (segments & SEG_D) GPIOD->PCOR = (1 << 3);
+    if (segments & SEG_E) GPIOD->PCOR = (1 << 4);
+    if (segments & SEG_F) GPIOD->PCOR = (1 << 5);
+    if (segments & SEG_G) GPIOD->PCOR = (1 << 6);
+
+    current_display = (current_display + 1) % 6;
 }
 
 void prender(){
@@ -94,6 +116,23 @@ void apagar(){
 void Display_GPIOs_init(){
 	SIM->SCGC5 |= SIM_SCGC5_PORTC_MASK | SIM_SCGC5_PORTD_MASK;
 
+    	PORTC->PCR[5] = PORT_PCR_MUX(1); // anodo PTC5
+	    GPIOC->PDDR |= (1 << 5);
+
+	    PORTC->PCR[4] = PORT_PCR_MUX(1); // anodo PTC4
+	    GPIOC->PDDR |= (1 << 4);
+
+	    PORTC->PCR[3] = PORT_PCR_MUX(1); // anodo PTC3
+	    GPIOC->PDDR |= (1 << 3);
+
+	    PORTC->PCR[2] = PORT_PCR_MUX(1); // anodo PTC2
+	    GPIOC->PDDR |= (1 << 2);
+
+	    PORTC->PCR[1] = PORT_PCR_MUX(1); // anodo PTC1
+	    GPIOC->PDDR |= (1 << 1);
+
+	    PORTC->PCR[0] = PORT_PCR_MUX(1); // anodo PTC0
+	    GPIOC->PDDR |= (1 << 0);
 
 	    PORTD->PCR[0] = PORT_PCR_MUX(1); // a PTD0
 	    GPIOD->PDDR |= (1 << 0);
@@ -107,23 +146,14 @@ void Display_GPIOs_init(){
 	    PORTD->PCR[3] = PORT_PCR_MUX(1); // d PTD3
 	    GPIOD->PDDR |= (1 << 3);
 
-	    PORTD->PCR[4] = PORT_PCR_MUX(1); // e PTC4
+	    PORTD->PCR[4] = PORT_PCR_MUX(1); // e PTD4
 	    GPIOD->PDDR |= (1 << 4);
 
-	    PORTD->PCR[5] = PORT_PCR_MUX(1); // f PTC2
+	    PORTD->PCR[5] = PORT_PCR_MUX(1); // f PTD5
 	    GPIOD->PDDR |= (1 << 5);
 
-	    PORTD->PCR[6] = PORT_PCR_MUX(1); // g PTC3
+	    PORTD->PCR[6] = PORT_PCR_MUX(1); // g PTD6
 	    GPIOD->PDDR |= (1 << 6);
 
-	    PORTC->PCR[5] = PORT_PCR_MUX(1); // anodo PTC5
-	    GPIOC->PDDR |= (1 << 5);
-	    //GPIOC->PSOR |= (1 << 5); //prender
-	    //GPIOC->PCOR |= (1 << 0); //apagar
 
-	    PORTC->PCR[4] = PORT_PCR_MUX(1); // anodo PTC4 //cambiar
-	    GPIOC->PDDR |= (1 << 4);
-	    //GPIOC->PSOR |= (1 << 0); //prender
 }
-
-
